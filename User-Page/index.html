@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Activities Manager</title>
+    <style>
+        /* CSS Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        /* Add more CSS styles as needed */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Life Activities Manager</h1>
+        <form id="activityForm">
+            <label for="activityName">Activity Name:</label>
+            <input type="text" id="activityName" required>
+            <br>
+            <label for="activityDate">Date:</label>
+            <input type="date" id="activityDate" required>
+            <br>
+            <label for="activityTime">Time:</label>
+            <input type="time" id="activityTime" required>
+            <br>
+            <label for="activityLocation">Location:</label>
+            <input type="text" id="activityLocation" required>
+            <br>
+            <label for="activityOOTD">OOTD:</label>
+            <input type="text" id="activityOOTD" required>
+            <br>
+            <button type="button" id="addActivity">Add Activity</button>
+        </form>
+        <h2>All Activities:</h2>
+        <ul id="activityList">
+            <!-- Activities will be displayed here -->
+        </ul>
+    </div>
+
+    <script>
+        // JavaScript logic for managing activities
+        const activityForm = document.getElementById('activityForm');
+        const activityList = document.getElementById('activityList');
+
+        activityForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('activityName').value;
+            const date = document.getElementById('activityDate').value;
+            const time = document.getElementById('activityTime').value;
+            const location = document.getElementById('activityLocation').value;
+            const ootd = document.getElementById('activityOOTD').value;
+            let remarks = 'Pending'; // Initial remarks
+
+            // Create a new activity item
+            const activityItem = document.createElement('li');
+            activityItem.innerHTML = `
+                <strong>${name}</strong> - Date: ${date}, Time: ${time}, Location: ${location}, OOTD: ${ootd}, Remarks: ${remarks}
+                <button class="edit">Edit</button>
+                <button class="delete">Delete</button>
+                <button class="done">Done</button>
+            `;
+
+            // Add event listeners for Edit, Delete, and Done buttons
+            const editButton = activityItem.querySelector('.edit');
+            const deleteButton = activityItem.querySelector('.delete');
+            const doneButton = activityItem.querySelector('.done');
+
+            editButton.addEventListener('click', function () {
+                const newName = prompt('Edit activity name:', name);
+                const newDate = prompt('Edit date:', date);
+                const newTime = prompt('Edit time:', time);
+                const newLocation = prompt('Edit location:', location);
+                const newOOTD = prompt('Edit OOTD:', ootd);
+                const newRemarks = prompt('Edit Remarks:', remarks);
+
+                if (newName !== null) {
+                    activityItem.innerHTML = `
+                        <strong>${newName}</strong> - Date: ${newDate}, Time: ${newTime}, Location: ${newLocation}, OOTD: ${newOOTD}, Remarks: ${newRemarks}
+                        <button class="edit">Edit</button>
+                        <button class="delete">Delete</button>
+                        <button class="done">Done</button>
+                    `;
+                }
+            });
+
+            deleteButton.addEventListener('click', function () {
+                activityList.removeChild(activityItem);
+            });
+
+            doneButton.addEventListener('click', function () {
+                remarks = 'Done';
+                activityItem.innerHTML = `
+                    <strong>${name}</strong> - Date: ${date}, Time: ${time}, Location: ${location}, OOTD: ${ootd}, Remarks: ${remarks}
+                    <button class="edit">Edit</button>
+                    <button class="delete">Delete</button>
+                `;
+                alert(`Congratulations! You've completed the activity: ${name}`);
+            });
+
+            // Add the item to the list
+            activityList.appendChild(activityItem);
+
+            // Clear the form fields
+            activityForm.reset();
+        });
+    </script>
+</body>
+</html>

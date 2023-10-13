@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Life Activities Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        /* Buttons */
+        .button {
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Form */
+        form {
+            display: none;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        form input[type="text"],
+        form input[type="date"],
+        form input[type="time"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        form input[type="submit"] {
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        /* Table */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        /* Notification */
+        .notification {
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Status */
+        .status-cell {
+            font-weight: bold;
+        }
+
+        .completed {
+            background-color: #c2f0c2;
+        }
+
+        .cancelled {
+            background-color: #f0c2c2;
+        }
+
+        .selected {
+            background-color: yellow;
+        }
+
+        /* Back Button */
+        .back-button {
+            background-color: #ccc;
+            border: none;
+            color: #fff;
+            padding: 8px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #999;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manage Life Activities</h1>
+
+    <!-- Main Page with Buttons -->
+    <div id="mainPage">
+        <button class="button" id="showFormButton">Add Activity</button>
+        <button class="button" id="showActivitiesButton">Show Activities</button>
+    </div>
+
+    <!-- Activity Form -->
+    <form id="activityForm">
+        <button class="back-button" id="backButtonForm">Back</button><br>
+        <label for="name">Activity Name:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required><br>
+
+        <label for="time">Time:</label>
+        <input type="time" id="time" name="time" required><br>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required><br>
+
+        <label for="ootd">OOTD (Outfit of the Day):</label>
+        <input type="text" id="ootd" name="ootd"><br>
+
+        <input type="submit" class="button" value="Add Activity">
+    </form>
+
+    <!-- Successfully Added Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Activity Table Header -->
+    <div id="activityTableHeader">
+        <button class="back-button" id="backButtonTable">Back</button><br>
+    </div>
+
+    <!-- Activity Table -->
+    <table id="activityTable">
+        <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Location</th>
+            <th>OOTD</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </table>
+    
+
+    <!-- Activity Table -->
+    <table id="activityTable">
+        <!-- Activities will be displayed here -->
+    </table>
+
+    <script>
+        const mainPage = document.getElementById('mainPage');
+        const showFormButton = document.getElementById('showFormButton');
+        const showActivitiesButton = document.getElementById('showActivitiesButton');
+        const activityForm = document.getElementById('activityForm');
+        const backButtonForm = document.getElementById('backButtonForm');
+        const backButtonTable = document.getElementById('backButtonTable');
+        const activityTableHeader = document.getElementById('activityTableHeader');
+        const activityTable = document.getElementById('activityTable');
+        const notification = document.getElementById('notification');
+
+        // Show form when "Add Activity" is clicked
+        showFormButton.addEventListener('click', function() {
+            mainPage.style.display = 'none';
+            activityForm.style.display = 'block';
+            activityTableHeader.style.display = 'none';
+            activityTable.style.display = 'none';
+            notification.style.display = 'none'; // Hide the notification
+        });
+
+        // Show table and table header when "Show Activities" is clicked
+        showActivitiesButton.addEventListener('click', function() {
+            mainPage.style.display = 'none';
+            activityForm.style.display = 'none';
+            activityTableHeader.style.display = 'block';
+            activityTable.style.display = 'block';
+            backButtonTable.style.display = 'block'; // Show the "Back" button
+            notification.style.display = 'none'; // Hide the notification
+        });
+
+        // Go back to the main page from the form or table
+        backButtonForm.addEventListener('click', function() {
+            activityForm.reset();
+            activityForm.style.display = 'none';
+            activityTableHeader.style.display = 'none';
+            activityTable.style.display = 'none';
+            notification.style.display = 'none'; // Hide the notification
+            mainPage.style.display = 'block';
+        });
+
+        // Go back to the main page from the table header
+        backButtonTable.addEventListener('click', function() {
+            activityTableHeader.style.display = 'none';
+            activityTable.style.display = 'none';
+            backButtonTable.style.display = 'none'; // Hide the "Back" button
+            notification.style.display = 'none'; // Hide the notification
+            mainPage.style.display = 'block';
+        });
+
+        activityForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const location = document.getElementById('location').value;
+            const ootd = document.getElementById('ootd').value;
+
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td contenteditable="true">${name}</td>
+                <td contenteditable="true">${date}</td>
+                <td contenteditable="true">${time}</td>
+                <td contenteditable="true">${location}</td>
+                <td contenteditable="true">${ootd}</td>
+                <td class="status-cell"><input type="checkbox" class="status-checkbox"></td>
+                <td>
+                    <button class="cancel-button">Cancel</button>
+                    <button class="delete-button">Delete</button>
+                </td>
+            `;
+
+            activityTable.appendChild(newRow);
+
+                    // Sort the table rows by date
+        const rows = Array.from(activityTable.querySelectorAll('tr'));
+        rows.sort((a, b) => {
+            const dateA = new Date(a.children[1].textContent);
+            const dateB = new Date(b.children[1].textContent);
+            return dateA - dateB;
+        });
+
+        activityTable.innerHTML = ''; // Clear the table
+        rows.forEach(row => {
+            activityTable.appendChild(row);
+        });
+
+        // Show the notification
+        notification.textContent = 'Activity successfully added!';
+        notification.style.display = 'block';
+
+        // Clear the form
+        activityForm.reset();
+    });
+
+    // Handle cancel button click
+    activityTable.addEventListener('click', function(e) {
+        if (e.target.classList.contains('cancel-button')) {
+            const row = e.target.closest('tr');
+            const statusCell = row.querySelector('.status-cell');
+            
+            // Check if the row is already cancelled, if not, update the row
+            if (!row.classList.contains('cancelled')) {
+                statusCell.textContent = 'Cancelled'; // Display "Cancelled" in the Status cell
+                row.style.backgroundColor = '#f0c2c2'; // Set row color to red
+                row.classList.add('cancelled');
+                
+                // Hide the "Cancel" and "Delete" buttons
+                const cancelBtn = row.querySelector('.cancel-button');
+                const deleteBtn = row.querySelector('.delete-button');
+                cancelBtn.style.display = 'none';
+                deleteBtn.style.display = 'none';
+            }
+        }
+    });
+
+     // Handle checkbox click to change status to "Accomplished" and modify row styling
+     activityTable.addEventListener('click', function (e) {
+        if (e.target.classList.contains('status-checkbox')) {
+            const row = e.target.closest('tr');
+            const statusCell = row.querySelector('.status-cell');
+            const cancelBtn = row.querySelector('.cancel-button');
+            const deleteBtn = row.querySelector('.delete-button');
+
+            if (e.target.checked) {
+                // Checkbox is selected
+                statusCell.textContent = 'Accomplished';
+                row.style.backgroundColor = 'yellow';
+                cancelBtn.style.display = 'none';
+                deleteBtn.style.display = 'none';
+            } else {
+                // Checkbox is deselected
+                statusCell.textContent = '';
+                row.style.backgroundColor = ''; // Reset the background color
+                cancelBtn.style.display = 'block'; // Show the cancel button
+                deleteBtn.style.display = 'block'; // Show the delete button
+            }
+        }
+    });
+</script>
+</body>
+</html>
